@@ -85,9 +85,33 @@ function closeModal() {
     document.body.style.overflow = 'auto';
 }
 
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.querySelector('.theme-icon');
+    
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    document.body.classList.toggle('dark-mode', currentTheme === 'dark');
+    themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    
+    themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        
+        themeIcon.style.transform = 'rotate(360deg) scale(0)';
+        
+        setTimeout(() => {
+            themeIcon.textContent = isDark ? '☀️' : '🌙';
+            themeIcon.style.transform = 'rotate(0deg) scale(1)';
+        }, 200);
+        
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     createFloatingHearts();
     loadCardsData();
+    initThemeToggle();
     
     document.getElementById('modalClose').addEventListener('click', closeModal);
     document.querySelector('.modal-overlay').addEventListener('click', closeModal);
