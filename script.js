@@ -108,6 +108,15 @@ function initThemeToggle() {
     });
 }
 
+const stickyHeader = document.getElementById('stickyHeader');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+        stickyHeader.classList.add('visible');
+    } else {
+        stickyHeader.classList.remove('visible');
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     createFloatingHearts();
     loadCardsData();
