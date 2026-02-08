@@ -1,0 +1,567 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Modern beige and blue color palette */
+    --navy-blue: #2c5f7e;
+    --soft-blue: #5a9bd4;
+    --sky-blue: #a8d5e2;
+    --warm-beige: #f5e6d3;
+    --cream-beige: #faf4ed;
+    --sand: #e8dcc4;
+    --deep-navy: #1a3a4f;
+    --accent-gold: #d4af37;
+    --shadow-blue: rgba(44, 95, 126, 0.15);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--cream-beige) 0%, var(--warm-beige) 50%, var(--sand) 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Animated floating hearts background */
+.hearts-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.heart-float {
+    position: absolute;
+    font-size: 20px;
+    opacity: 0.08;
+    animation: float-up 15s infinite ease-in-out;
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.08;
+    }
+    90% {
+        opacity: 0.08;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+header {
+    text-align: center;
+    padding: 80px 20px 60px;
+    position: relative;
+    z-index: 1;
+    animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    font-family: 'Mrs Saint Delafield', cursive;
+    font-size: clamp(56px, 9vw, 108px);
+    color: var(--navy-blue);
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px var(--shadow-blue);
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2.5vw, 26px);
+    color: var(--deep-navy);
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 1px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 32px;
+    animation: fadeIn 1s ease-out 0.3s both;
+    padding-bottom: 60px;
+    align-items: start;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.card {
+    background: white;
+    border-radius: 24px;
+    padding: 36px;
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.05),
+        0 10px 20px var(--shadow-blue);
+    border: 1px solid rgba(168, 213, 226, 0.3);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: cardAppear 0.6s ease-out backwards;
+    backdrop-filter: blur(10px);
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Stagger animation for cards */
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+.card:nth-child(6) { animation-delay: 0.6s; }
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--navy-blue), var(--soft-blue), var(--sky-blue));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.card:hover {
+    transform: translateY(-12px);
+    box-shadow: 
+        0 8px 12px rgba(0, 0, 0, 0.08),
+        0 20px 40px var(--shadow-blue);
+    border-color: var(--soft-blue);
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card::after {
+    content: '💌';
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 32px;
+    opacity: 0.15;
+    transition: all 0.4s ease;
+}
+
+.card:hover::after {
+    opacity: 0.4;
+    transform: scale(1.15) rotate(-5deg);
+}
+
+.card-recipient {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--navy-blue);
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.card-recipient::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--soft-blue), transparent);
+    border-radius: 3px;
+}
+
+.card-message {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    line-height: 1.8;
+    color: #4a4a4a;
+    margin-bottom: 28px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+}
+
+.card-from {
+    font-family: 'Mrs Saint Delafield', cursive;
+    font-size: 32px;
+    color: var(--deep-navy);
+    text-align: right;
+    position: relative;
+    padding-top: 20px;
+    border-top: 1px solid var(--sky-blue);
+    margin-top: auto;
+}
+
+.card-from::before {
+    content: 'Written in,';
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: absolute;
+    top: -8px;
+    right: 0;
+    color: var(--soft-blue);
+    background: white;
+    padding: 0 8px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 100px 20px;
+    color: var(--navy-blue);
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-style: italic;
+    grid-column: 1 / -1;
+}
+
+.empty-state::before {
+    content: '💝';
+    display: block;
+    font-size: 90px;
+    margin-bottom: 24px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header {
+        padding: 60px 20px 40px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .card {
+        padding: 28px;
+    }
+
+    .card-recipient {
+        font-size: 24px;
+    }
+
+    .card-message {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 24px;
+    }
+
+    .card-recipient {
+        font-size: 22px;
+    }
+
+    .card-from {
+        font-size: 28px;
+    }
+}
+
+/* Tablet optimization */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Large desktop optimization */
+@media (min-width: 1400px) {
+    .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Fullscreen Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 58, 79, 0.85);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+}
+
+.modal-content {
+    position: relative;
+    z-index: 1001;
+    max-width: 800px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: white;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 28px;
+    color: var(--navy-blue);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal-close:hover {
+    background: var(--navy-blue);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.modal-card {
+    background: white;
+    border-radius: 24px;
+    padding: 60px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(168, 213, 226, 0.3);
+    position: relative;
+}
+
+.modal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--navy-blue), var(--soft-blue), var(--sky-blue));
+}
+
+.modal-card::after {
+    content: '💌';
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    font-size: 48px;
+    opacity: 0.15;
+}
+
+.modal-recipient {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    color: var(--navy-blue);
+    font-weight: 700;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.modal-recipient::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--soft-blue), transparent);
+    border-radius: 4px;
+}
+
+.modal-message {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    line-height: 1.9;
+    color: #4a4a4a;
+    margin-bottom: 40px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+}
+
+.modal-from {
+    font-family: 'Mrs Saint Delafield', cursive;
+    font-size: 44px;
+    color: var(--deep-navy);
+    text-align: right;
+    position: relative;
+    padding-top: 30px;
+    border-top: 2px solid var(--sky-blue);
+}
+
+.modal-from::before {
+    content: 'With love,';
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: absolute;
+    top: -10px;
+    right: 0;
+    color: var(--soft-blue);
+    background: white;
+    padding: 0 12px;
+}
+
+/* Click indicator on cards */
+.card {
+    cursor: pointer;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--navy-blue), var(--soft-blue), var(--sky-blue));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* Modal responsive */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .modal-card {
+        padding: 40px 30px;
+    }
+
+    .modal-close {
+        top: -45px;
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+    }
+
+    .modal-recipient {
+        font-size: 32px;
+        margin-bottom: 24px;
+    }
+
+    .modal-message {
+        font-size: 18px;
+        line-height: 1.8;
+    }
+
+    .modal-from {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-card {
+        padding: 30px 24px;
+        border-radius: 16px;
+    }
+
+    .modal-recipient {
+        font-size: 28px;
+    }
+
+    .modal-message {
+        font-size: 17px;
+    }
+Written in
+    .modal-from {
+        font-size: 32px;
+    }
+}
