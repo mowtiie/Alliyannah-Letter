@@ -45,8 +45,8 @@ function renderCards(cards) {
     cardsGrid.innerHTML = cards.map((card, index) => `
         <div class="card" onclick="toggleCard(${index})" style="animation-delay: ${index * 0.1}s">
             <div class="card-header">
-                <div class="card-recipient">${escapeHtml(card.recipient)}</div>
-                <div class="card-from">${escapeHtml(card.from)}</div>
+                <div class="card-recipient">${escapeHtml(card.title)}</div>
+                <div class="card-from">${escapeHtml(card.date)}</div>
             </div>
             <div class="card-content" id="card-content-${index}">
                 <div class="card-message">${escapeHtml(card.message)}</div>

@@ -264,7 +264,7 @@ h1 {
 }
 
 .card-from::before {
-    content: 'From,';
+    content: 'written in,';
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-style: normal;
@@ -353,19 +353,6 @@ h1 {
     .cards-grid {
         grid-template-columns: repeat(3, 1fr);
     }
-}
-
-    border-radius: 50%;
-    border: 1.5px solid var(--navy-blue);
-    background: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px; 
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px var(--shadow-blue);
-    z-index: 1100; 
 }
 
 body.dark-mode .theme-toggle {
