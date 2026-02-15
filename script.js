@@ -43,10 +43,15 @@ function renderCards(cards) {
     }
 
     cardsGrid.innerHTML = cards.map((card, index) => `
-        <div class="card" onclick="openModal(${index})" style="animation-delay: ${index * 0.1}s">
-            <div class="card-recipient">${escapeHtml(card.recipient)}</div>
-            <div class="card-message">${escapeHtml(card.message)}</div>
-            <div class="card-from">${escapeHtml(card.from)}</div>
+        <div class="card" onclick="toggleCard(${index})" style="animation-delay: ${index * 0.1}s">
+            <div class="card-header">
+                <div class="card-recipient">${escapeHtml(card.recipient)}</div>
+                <div class="card-from">${escapeHtml(card.from)}</div>
+            </div>
+            <div class="card-content" id="card-content-${index}">
+                <div class="card-message">${escapeHtml(card.message)}</div>
+            </div>
+            <div class="card-toggle-icon">▼</div>
         </div>
     `).join('');
 }
@@ -67,22 +72,34 @@ async function loadCardsData() {
     }
 }
 
-function openModal(cardIndex) {
-    const card = cardsData[cardIndex];
-    const modal = document.getElementById('cardModal');
+function toggleCard(cardIndex) {
+    const cardContent = document.getElementById(`card-content-${cardIndex}`);
+    const card = cardContent.closest('.card');
+    const icon = card.querySelector('.card-toggle-icon');
     
-    document.getElementById('modalRecipient').textContent = card.recipient;
-    document.getElementById('modalMessage').textContent = card.message;
-    document.getElementById('modalFrom').textContent = card.from;
+    // Close all other cards
+    document.querySelectorAll('.card').forEach((otherCard, index) => {
+        if (index !== cardIndex && otherCard.classList.contains('expanded')) {
+            otherCard.classList.remove('expanded');
+            const otherContent = document.getElementById(`card-content-${index}`);
+            const otherIcon = otherCard.querySelector('.card-toggle-icon');
+            if (otherContent) otherContent.style.maxHeight = '0';
+            if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+        }
+    });
     
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-    const modal = document.getElementById('cardModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    // Toggle current card
+    const isExpanded = card.classList.contains('expanded');
+    
+    if (isExpanded) {
+        card.classList.remove('expanded');
+        cardContent.style.maxHeight = '0';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        card.classList.add('expanded');
+        cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
+        icon.style.transform = 'rotate(180deg)';
+    }
 }
 
 function initThemeToggle() {
@@ -121,12 +138,4 @@ document.addEventListener('DOMContentLoaded', function() {
     createFloatingHearts();
     loadCardsData();
     initThemeToggle();
-    
-    document.getElementById('modalClose').addEventListener('click', closeModal);
-    document.querySelector('.modal-overlay').addEventListener('click', closeModal);
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeModal();
-        }
-    });
 });

@@ -135,6 +135,31 @@ h1 {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     animation: cardAppear 0.6s ease-out backwards;
     backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+.card-header {
+    position: relative;
+}
+
+.card-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card.expanded .card-content {
+    margin-top: 24px;
+}
+
+.card-toggle-icon {
+    position: absolute;
+    top: 36px;
+    right: 36px;
+    font-size: 20px;
+    color: var(--soft-blue);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
 }
 
 @keyframes cardAppear {
@@ -199,7 +224,7 @@ h1 {
     font-size: 28px;
     color: var(--navy-blue);
     font-weight: 700;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -223,9 +248,9 @@ h1 {
     font-size: 17px;
     line-height: 1.8;
     color: #4a4a4a;
-    margin-bottom: 28px;
     font-weight: 400;
     letter-spacing: 0.2px;
+    padding-top: 8px;
 }
 
 .card-from {
@@ -234,13 +259,12 @@ h1 {
     color: var(--deep-navy);
     text-align: right;
     position: relative;
-    padding-top: 20px;
-    border-top: 1px solid var(--sky-blue);
-    margin-top: auto;
+    padding-top: 12px;
+    border-top: none;
 }
 
 .card-from::before {
-    content: 'Written in,';
+    content: 'From,';
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-style: normal;
@@ -331,237 +355,6 @@ h1 {
     }
 }
 
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.3s ease-out;
-}
-
-.modal.active {
-    display: flex;
-}
-
-.modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(26, 58, 79, 0.85);
-    backdrop-filter: blur(8px);
-    cursor: pointer;
-}
-
-.modal-content {
-    position: relative;
-    z-index: 1001;
-    max-width: 800px;
-    width: 90%;
-    max-height: 85vh;
-    overflow-y: auto;
-    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9) translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-.modal-close {
-    position: absolute;
-    top: -50px;
-    right: 0;
-    background: white;
-    border: none;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    font-size: 28px;
-    color: var(--navy-blue);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.modal-close:hover {
-    background: var(--navy-blue);
-    color: white;
-    transform: rotate(90deg);
-}
-
-.modal-card {
-    background: white;
-    border-radius: 24px;
-    padding: 60px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(168, 213, 226, 0.3);
-    position: relative;
-}
-
-.modal-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, var(--navy-blue), var(--soft-blue), var(--sky-blue));
-}
-
-.modal-card::after {
-    content: '💌';
-    position: absolute;
-    top: 30px;
-    right: 30px;
-    font-size: 48px;
-    opacity: 0.15;
-}
-
-.modal-recipient {
-    font-family: 'Playfair Display', serif;
-    font-size: 42px;
-    color: var(--navy-blue);
-    font-weight: 700;
-    margin-bottom: 30px;
-    position: relative;
-    padding-bottom: 20px;
-}
-
-.modal-recipient::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, var(--soft-blue), transparent);
-    border-radius: 4px;
-}
-
-.modal-message {
-    font-family: 'Inter', sans-serif;
-    font-size: 22px;
-    line-height: 1.9;
-    color: #4a4a4a;
-    margin-bottom: 40px;
-    font-weight: 400;
-    letter-spacing: 0.3px;
-}
-
-.modal-from {
-    font-family: 'Mrs Saint Delafield', cursive;
-    font-size: 44px;
-    color: var(--deep-navy);
-    text-align: right;
-    position: relative;
-    padding-top: 30px;
-    border-top: 2px solid var(--sky-blue);
-}
-
-.modal-from::before {
-    content: 'With love,';
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    position: absolute;
-    top: -10px;
-    right: 0;
-    color: var(--soft-blue);
-    background: white;
-    padding: 0 12px;
-}
-
-.card {
-    cursor: pointer;
-}
-
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, var(--navy-blue), var(--soft-blue), var(--sky-blue));
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        max-height: 90vh;
-    }
-
-    .modal-card {
-        padding: 40px 30px;
-    }
-
-    .modal-close {
-        top: -45px;
-        width: 40px;
-        height: 40px;
-        font-size: 24px;
-    }
-
-    .modal-recipient {
-        font-size: 32px;
-        margin-bottom: 24px;
-    }
-
-    .modal-message {
-        font-size: 18px;
-        line-height: 1.8;
-    }
-
-    .modal-from {
-        font-size: 36px;
-    }
-}
-
-@media (max-width: 480px) {
-    .modal-card {
-        padding: 30px 24px;
-        border-radius: 16px;
-    }
-
-    .modal-recipient {
-        font-size: 28px;
-    }
-
-    .modal-message {
-        font-size: 17px;
-    }
-Written in
-    .modal-from {
-        font-size: 32px;
-    }
-}
-.theme-toggle {
-    position: fixed;
-    top: 10px; 
-    right: 20px;
-    width: 40px;  
-    height: 40px; 
     border-radius: 50%;
     border: 1.5px solid var(--navy-blue);
     background: white;
@@ -684,17 +477,6 @@ body.dark-mode .modal-from::before {
     z-index: 1100; 
 }
 
-body.dark-mode .modal-close {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--sky-blue);
-    border: 1px solid var(--sky-blue);
-}
-
-body.dark-mode .modal-close:hover {
-    background: var(--sky-blue);
-    color: #1a1a2e;
-}
-
 .sticky-header {
     padding: 0 60px;
 }
@@ -747,4 +529,25 @@ body.dark-mode .sticky-header {
 
 body.dark-mode .sticky-title {
     color: var(--sky-blue);
+}
+/* Dark mode support for toggle icon */
+body.dark-mode .card-toggle-icon {
+    color: var(--sky-blue);
+}
+
+/* Responsive adjustments for toggle icon */
+@media (max-width: 768px) {
+    .card-toggle-icon {
+        top: 28px;
+        right: 28px;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-toggle-icon {
+        top: 24px;
+        right: 24px;
+        font-size: 16px;
+    }
 }
