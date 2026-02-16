@@ -45,8 +45,8 @@ function renderCards(cards) {
     const regularCards = cards.map((card, index) => `
         <div class="card" onclick="toggleCard(${index})" style="animation-delay: ${index * 0.1}s">
             <div class="card-header">
-                <div class="card-recipient">${escapeHtml(card.title)}</div>
-                <div class="card-from">${escapeHtml(card.date)}</div>
+                <div class="card-title">${escapeHtml(card.title)}</div>
+                <div class="card-date">${escapeHtml(card.date)}</div>
             </div>
             <div class="card-content" id="card-content-${index}">
                 <div class="card-message">${escapeHtml(card.message)}</div>
@@ -68,7 +68,6 @@ function renderCards(cards) {
 
     cardsGrid.innerHTML = regularCards + lockedCard;
     
-    // Add event listener to locked card after rendering
     setTimeout(() => {
         const lockedCardElement = document.querySelector('.locked-card');
         if (lockedCardElement) {
@@ -98,7 +97,6 @@ function toggleCard(cardIndex) {
     const card = cardContent.closest('.card');
     const icon = card.querySelector('.card-toggle-icon');
     
-    // Close all other cards
     document.querySelectorAll('.card').forEach((otherCard, index) => {
         if (index !== cardIndex && otherCard.classList.contains('expanded')) {
             otherCard.classList.remove('expanded');
@@ -109,7 +107,6 @@ function toggleCard(cardIndex) {
         }
     });
     
-    // Toggle current card
     const isExpanded = card.classList.contains('expanded');
     
     if (isExpanded) {
@@ -123,7 +120,7 @@ function toggleCard(cardIndex) {
     }
 }
 
-const PASSCODE = '143143'; // Change this to your desired 6-digit passcode
+const PASSCODE = '143143'; 
 let isLockedCardUnlocked = false;
 
 function openLockedCard(event) {
@@ -140,7 +137,6 @@ function openLockedCard(event) {
     passcodeModal.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // Focus on first input
     setTimeout(() => {
         document.getElementById('digit-0').focus();
     }, 100);
@@ -151,12 +147,10 @@ function closePasscodeModal() {
     passcodeModal.classList.remove('active');
     document.body.style.overflow = 'auto';
     
-    // Clear inputs
     for (let i = 0; i < 6; i++) {
         document.getElementById(`digit-${i}`).value = '';
     }
     
-    // Clear error
     document.getElementById('passcodeError').style.display = 'none';
 }
 
@@ -164,18 +158,15 @@ function handleDigitInput(index) {
     const input = document.getElementById(`digit-${index}`);
     const value = input.value;
     
-    // Only allow numbers
     if (value && !/^\d$/.test(value)) {
         input.value = '';
         return;
     }
     
-    // Move to next input if value entered
     if (value && index < 5) {
         document.getElementById(`digit-${index + 1}`).focus();
     }
     
-    // Check if all digits entered
     if (index === 5 && value) {
         checkPasscode();
     }
@@ -184,12 +175,10 @@ function handleDigitInput(index) {
 function handleDigitKeydown(index, event) {
     const input = document.getElementById(`digit-${index}`);
     
-    // Handle backspace
     if (event.key === 'Backspace' && !input.value && index > 0) {
         document.getElementById(`digit-${index - 1}`).focus();
     }
     
-    // Handle paste
     if (event.key === 'v' && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
         navigator.clipboard.readText().then(text => {
@@ -213,23 +202,19 @@ function checkPasscode() {
     const errorElement = document.getElementById('passcodeError');
     
     if (enteredCode === PASSCODE) {
-        // Correct passcode
         isLockedCardUnlocked = true;
         closePasscodeModal();
         unlockCard();
     } else {
-        // Wrong passcode
         errorElement.textContent = 'Incorrect passcode. Try again!';
         errorElement.style.display = 'block';
         
-        // Shake animation
         const passcodeInputs = document.querySelector('.passcode-inputs');
         passcodeInputs.style.animation = 'shake 0.5s';
         setTimeout(() => {
             passcodeInputs.style.animation = '';
         }, 500);
         
-        // Clear inputs
         for (let i = 0; i < 6; i++) {
             document.getElementById(`digit-${i}`).value = '';
         }
@@ -240,25 +225,23 @@ function checkPasscode() {
 function unlockCard() {
     const lockedCard = document.querySelector('.locked-card');
     
-    // Remove old event listener
     lockedCard.removeEventListener('click', openLockedCard);
     
     lockedCard.classList.add('unlocked');
     
-    // Replace content with actual card
     const lockedCardData = {
-        recipient: "My Dearest Ali",
-        message: "This is a special message just for you! You found the secret gift. I wanted to create something unique that only you could unlock. You mean the world to me, and this hidden treasure is a reminder of how special you are. Thank you for being amazing! ❤️",
-        from: "Your Secret Admirer",
-        downloadLink: "./faithful.apk", // Just put your APK file in the same directory as index.html
+        title: "So Ali won't forget",
+        message: "️I know that you've been struggling with your short-term memory, Ali. So I made something for you, a simple application that will help you quickly and easily write down your thoughts. 🩵",
+        date: "From Vrix",
+        downloadLink: "./faithful.apk",
         downloadText: "Faithful"
     };
     
     setTimeout(() => {
         lockedCard.innerHTML = `
             <div class="card-header">
-                <div class="card-recipient">${escapeHtml(lockedCardData.recipient)}</div>
-                <div class="card-from">${escapeHtml(lockedCardData.from)}</div>
+                <div class="card-title">${escapeHtml(lockedCardData.title)}</div>
+                <div class="card-date">${escapeHtml(lockedCardData.date)}</div>
             </div>
             <div class="card-content" id="card-content-locked" style="max-height: 0;">
                 <div class="card-message">${escapeHtml(lockedCardData.message)}</div>
@@ -273,15 +256,12 @@ function unlockCard() {
             <div class="card-toggle-icon">▼</div>
         `;
         
-        // Add new event listener for toggling
         lockedCard.addEventListener('click', function(e) {
-            // Don't toggle if clicking on the download link
             if (!e.target.closest('.download-link')) {
                 toggleLockedCardContent();
             }
         });
         
-        // Auto expand to show the message
         setTimeout(() => {
             toggleLockedCardContent();
         }, 300);
@@ -295,7 +275,6 @@ function toggleLockedCardContent() {
     
     if (!cardContent || !icon) return;
     
-    // Close all other regular cards
     document.querySelectorAll('.card:not(.locked-card)').forEach((otherCard) => {
         if (otherCard.classList.contains('expanded')) {
             otherCard.classList.remove('expanded');
@@ -306,7 +285,6 @@ function toggleLockedCardContent() {
         }
     });
     
-    // Toggle current card
     const isExpanded = lockedCard.classList.contains('expanded');
     
     if (isExpanded) {

@@ -219,7 +219,7 @@ h1 {
     transform: scale(1.15) rotate(-5deg);
 }
 
-.card-recipient {
+.card-title {
     font-family: 'Playfair Display', serif;
     font-size: 28px;
     color: var(--navy-blue);
@@ -232,7 +232,7 @@ h1 {
     padding-bottom: 12px;
 }
 
-.card-recipient::before {
+.card-title::before {
     content: '';
     position: absolute;
     bottom: 0;
@@ -253,7 +253,7 @@ h1 {
     padding-top: 8px;
 }
 
-.card-from {
+.card-date {
     font-family: 'Mrs Saint Delafield', cursive;
     font-size: 32px;
     color: var(--deep-navy);
@@ -263,7 +263,7 @@ h1 {
     border-top: none;
 }
 
-.card-from::before {
+.card-date::before {
     content: 'From,';
     font-family: 'Inter', sans-serif;
     font-size: 12px;
@@ -320,7 +320,7 @@ h1 {
         padding: 28px;
     }
 
-    .card-recipient {
+    .card-title {
         font-size: 24px;
     }
 
@@ -334,11 +334,11 @@ h1 {
         padding: 24px;
     }
 
-    .card-recipient {
+    .card-title {
         font-size: 22px;
     }
 
-    .card-from {
+    .card-date {
         font-size: 28px;
     }
 }
@@ -353,19 +353,6 @@ h1 {
     .cards-grid {
         grid-template-columns: repeat(3, 1fr);
     }
-}
-
-    border-radius: 50%;
-    border: 1.5px solid var(--navy-blue);
-    background: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px; 
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px var(--shadow-blue);
-    z-index: 1100; 
 }
 
 body.dark-mode .theme-toggle {
@@ -409,7 +396,7 @@ body.dark-mode .card:hover {
     box-shadow: 0 12px 40px rgba(168, 213, 226, 0.2);
 }
 
-body.dark-mode .card-recipient {
+body.dark-mode .card-title {
     color: var(--sky-blue);
 }
 
@@ -417,11 +404,11 @@ body.dark-mode .card-message {
     color: #e0e0e0;
 }
 
-body.dark-mode .card-from {
+body.dark-mode .card-date {
     color: var(--sand);
 }
 
-body.dark-mode .card-from::before {
+body.dark-mode .card-date::before {
     color: var(--sky-blue);
     background: transparent;
 }
@@ -530,12 +517,11 @@ body.dark-mode .sticky-header {
 body.dark-mode .sticky-title {
     color: var(--sky-blue);
 }
-/* Dark mode support for toggle icon */
+
 body.dark-mode .card-toggle-icon {
     color: var(--sky-blue);
 }
 
-/* Responsive adjustments for toggle icon */
 @media (max-width: 768px) {
     .card-toggle-icon {
         top: 28px;
@@ -552,7 +538,6 @@ body.dark-mode .card-toggle-icon {
     }
 }
 
-/* Locked Card Styles */
 .locked-card {
     background: linear-gradient(135deg, var(--navy-blue), var(--soft-blue));
     position: relative;
@@ -625,11 +610,11 @@ body.dark-mode .card-toggle-icon {
     position: relative;
 }
 
-.locked-card.unlocked .card-recipient {
+.locked-card.unlocked .card-title {
     margin-bottom: 16px;
 }
 
-.locked-card.unlocked .card-from {
+.locked-card.unlocked .card-date {
     padding-top: 12px;
 }
 
@@ -662,7 +647,6 @@ body.dark-mode .locked-card.unlocked {
     display: block;
 }
 
-/* Passcode Modal Styles */
 .passcode-modal {
     position: fixed;
     top: 0;
@@ -807,7 +791,6 @@ body.dark-mode .locked-card.unlocked {
     75% { transform: translateX(10px); }
 }
 
-/* Dark mode styles for passcode modal */
 body.dark-mode .passcode-overlay {
     background: rgba(10, 10, 20, 0.95);
 }
@@ -842,7 +825,6 @@ body.dark-mode .passcode-close:hover {
     color: #1a1a2e;
 }
 
-/* Responsive styles for passcode modal */
 @media (max-width: 768px) {
     .passcode-card {
         min-width: 90%;
@@ -891,11 +873,13 @@ body.dark-mode .passcode-close:hover {
     }
 }
 
-/* Download Link Styles */
 .card-download {
     margin-top: 24px;
     padding-top: 24px;
     border-top: 1px solid var(--sky-blue);
+    text-align: center;
+    display: flex;
+    justify-content: center;
 }
 
 .download-link {
@@ -960,7 +944,6 @@ body.dark-mode .passcode-close:hover {
     transform: translateX(5px);
 }
 
-/* Dark mode styles for download link */
 body.dark-mode .card-download {
     border-top-color: rgba(168, 213, 226, 0.3);
 }
@@ -975,7 +958,6 @@ body.dark-mode .download-link:hover {
     box-shadow: 0 6px 20px rgba(168, 213, 226, 0.5);
 }
 
-/* Responsive download link */
 @media (max-width: 768px) {
     .download-link {
         padding: 14px 24px;
