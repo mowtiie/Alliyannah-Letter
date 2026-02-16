@@ -247,7 +247,7 @@ function unlockCard() {
                 <div class="card-message">${escapeHtml(lockedCardData.message)}</div>
                 <div class="card-download">
                     <a href="${lockedCardData.downloadLink}" class="download-link" download>
-                        <span class="download-icon">📦</span>
+                        <span class="download-icon">🩷</span>
                         <span class="download-text">${escapeHtml(lockedCardData.downloadText)}</span>
                         <span class="download-arrow">→</span>
                     </a>
