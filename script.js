@@ -230,7 +230,7 @@ function unlockCard() {
     lockedCard.classList.add('unlocked');
     
     const lockedCardData = {
-        title: "So Ali won't forget",
+        title: "So Ali won't forget...",
         message: "️I know that you've been struggling with your short-term memory, Ali. So I made something for you, a simple application that will help you quickly and easily write down your thoughts. 🩵",
         date: "From Vrix",
         downloadLink: "./faithful.apk",
