@@ -120,7 +120,7 @@ function toggleCard(cardIndex) {
     }
 }
 
-const PASSCODE = '112425'; 
+const PASSCODE = '061604'; 
 let isLockedCardUnlocked = false;
 
 function openLockedCard(event) {
