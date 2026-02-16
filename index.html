@@ -11,19 +11,72 @@
 <body>
     <div class="hearts-bg" id="heartsBackground"></div>
     <nav class="sticky-header" id="stickyHeader">
-        <span class="sticky-title">Keep reading po hehe</span>
+        <span class="sticky-title">Keep reading, don't be shy now...</span>
     </nav>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <span class="theme-icon">🌙</span>
     </button>
     <header>
         <h1>To Alliyannah Faith.</h1>
-        <p class="subtitle">To show my appreciation for you, <br>here is how I will respond for what you've been doing for me. <br> In this way, I hope that I will get to know you more in the future.</p>
+        <p class="subtitle">To show my appreciation for you, I created this.</p>
     </header>
     <div class="container">
         <div class="cards-grid" id="cardsGrid">
         </div>
     </div>
+    <div class="passcode-modal" id="passcodeModal">
+        <div class="passcode-overlay" onclick="closePasscodeModal()"></div>
+        <div class="passcode-content">
+            <button class="passcode-close" onclick="closePasscodeModal()">&times;</button>
+            <div class="passcode-card">
+                <div class="passcode-icon">🎁</div>
+                <h2 class="passcode-title">Enter Passcode</h2>
+                <p class="passcode-subtitle">Enter the 6-digit code to unlock this special gift</p>
+                
+                <div class="passcode-inputs">
+                    <input type="text" 
+                           class="passcode-digit" 
+                           id="digit-0" 
+                           maxlength="1" 
+                           oninput="handleDigitInput(0)"
+                           onkeydown="handleDigitKeydown(0, event)">
+                    <input type="text" 
+                           class="passcode-digit" 
+                           id="digit-1" 
+                           maxlength="1" 
+                           oninput="handleDigitInput(1)"
+                           onkeydown="handleDigitKeydown(1, event)">
+                    <input type="text" 
+                           class="passcode-digit" 
+                           id="digit-2" 
+                           maxlength="1" 
+                           oninput="handleDigitInput(2)"
+                           onkeydown="handleDigitKeydown(2, event)">
+                    <input type="text" 
+                           class="passcode-digit" 
+                           id="digit-3" 
+                           maxlength="1" 
+                           oninput="handleDigitInput(3)"
+                           onkeydown="handleDigitKeydown(3, event)">
+                    <input type="text" 
+                           class="passcode-digit" 
+                           id="digit-4" 
+                           maxlength="1" 
+                           oninput="handleDigitInput(4)"
+                           onkeydown="handleDigitKeydown(4, event)">
+                    <input type="text" 
+                           class="passcode-digit" 
+                           id="digit-5" 
+                           maxlength="1" 
+                           oninput="handleDigitInput(5)"
+                           onkeydown="handleDigitKeydown(5, event)">
+                </div>
+                
+                <div class="passcode-error" id="passcodeError"></div>
+            </div>
+        </div>
+    </div>
+    
     <script src="script.js"></script>
 </body>
 </html>

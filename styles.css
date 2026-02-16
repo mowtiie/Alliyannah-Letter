@@ -264,7 +264,7 @@ h1 {
 }
 
 .card-from::before {
-    content: 'written in,';
+    content: 'From,';
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-style: normal;
@@ -536,5 +536,344 @@ body.dark-mode .card-toggle-icon {
         top: 24px;
         right: 24px;
         font-size: 16px;
+    }
+}
+
+/* Locked Card Styles */
+.locked-card {
+    background: linear-gradient(135deg, var(--navy-blue), var(--soft-blue));
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.locked-card::before {
+    opacity: 1 !important;
+}
+
+.locked-card::after {
+    content: '✨';
+    opacity: 0.2;
+    font-size: 80px;
+}
+
+.locked-card-content {
+    text-align: center;
+    color: white;
+    z-index: 1;
+}
+
+.locked-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.locked-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.locked-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.locked-lock {
+    font-size: 40px;
+    opacity: 0.7;
+}
+
+.locked-card.unlocked {
+    background: white;
+    animation: unlockFlash 0.6s ease-out;
+    min-height: auto;
+    display: block;
+    padding: 36px;
+}
+
+.locked-card.unlocked .card-header {
+    position: relative;
+}
+
+.locked-card.unlocked .card-recipient {
+    margin-bottom: 16px;
+}
+
+.locked-card.unlocked .card-from {
+    padding-top: 12px;
+}
+
+@keyframes unlockFlash {
+    0% {
+        background: linear-gradient(135deg, var(--navy-blue), var(--soft-blue));
+        transform: scale(1);
+    }
+    50% {
+        background: linear-gradient(135deg, var(--accent-gold), var(--soft-blue));
+        transform: scale(1.05);
+    }
+    100% {
+        background: white;
+        transform: scale(1);
+    }
+}
+
+.locked-card.unlocked .locked-card-content {
+    display: none;
+}
+
+body.dark-mode .locked-card {
+    background: linear-gradient(135deg, var(--navy-blue), var(--deep-navy));
+}
+
+body.dark-mode .locked-card.unlocked {
+    background: rgba(255, 255, 255, 0.08);
+    min-height: auto;
+    display: block;
+}
+
+/* Passcode Modal Styles */
+.passcode-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.passcode-modal.active {
+    display: flex;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.passcode-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 58, 79, 0.95);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+.passcode-content {
+    position: relative;
+    z-index: 2001;
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.passcode-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: white;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 28px;
+    color: var(--navy-blue);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 2002;
+}
+
+.passcode-close:hover {
+    background: var(--navy-blue);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.passcode-card {
+    background: white;
+    border-radius: 24px;
+    padding: 50px 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    min-width: 400px;
+    position: relative;
+}
+
+.passcode-icon {
+    font-size: 70px;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+}
+
+.passcode-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--navy-blue);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.passcode-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.passcode-inputs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.passcode-digit {
+    width: 50px;
+    height: 60px;
+    font-size: 28px;
+    text-align: center;
+    border: 2px solid var(--sky-blue);
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--navy-blue);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.passcode-digit:focus {
+    border-color: var(--soft-blue);
+    box-shadow: 0 0 0 3px rgba(90, 155, 212, 0.2);
+    transform: scale(1.05);
+}
+
+.passcode-error {
+    color: #e74c3c;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+    margin-top: 10px;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+/* Dark mode styles for passcode modal */
+body.dark-mode .passcode-overlay {
+    background: rgba(10, 10, 20, 0.95);
+}
+
+body.dark-mode .passcode-card {
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(20px);
+}
+
+body.dark-mode .passcode-title {
+    color: var(--sky-blue);
+}
+
+body.dark-mode .passcode-subtitle {
+    color: #ccc;
+}
+
+body.dark-mode .passcode-digit {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--sky-blue);
+    color: white;
+}
+
+body.dark-mode .passcode-close {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--sky-blue);
+    border: 1px solid var(--sky-blue);
+}
+
+body.dark-mode .passcode-close:hover {
+    background: var(--sky-blue);
+    color: #1a1a2e;
+}
+
+/* Responsive styles for passcode modal */
+@media (max-width: 768px) {
+    .passcode-card {
+        min-width: 90%;
+        padding: 40px 30px;
+    }
+    
+    .passcode-digit {
+        width: 45px;
+        height: 55px;
+        font-size: 24px;
+    }
+    
+    .passcode-inputs {
+        gap: 8px;
+    }
+    
+    .passcode-close {
+        top: -45px;
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .passcode-card {
+        padding: 30px 20px;
+    }
+    
+    .passcode-digit {
+        width: 40px;
+        height: 50px;
+        font-size: 22px;
+    }
+    
+    .passcode-inputs {
+        gap: 6px;
+    }
+    
+    .passcode-title {
+        font-size: 26px;
+    }
+    
+    .passcode-icon {
+        font-size: 60px;
     }
 }
