@@ -231,7 +231,7 @@ function unlockCard() {
     
     const lockedCardData = {
         title: "So Ali won't forget...",
-        message: "️I know that you've been struggling with your short-term memory, Ali. So I made something for you, a simple application that will help you quickly and easily write down your thoughts. 🩵",
+        message: "️I know that you've been struggling with your short-term memory, Ali. So I made something for you, a simple application that will help you quickly and easily write down your thoughts so you won't forget about them. 🩵",
         date: "From Vrix",
         downloadLink: "./faithful.apk",
         downloadText: "Faithful"
