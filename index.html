@@ -34,49 +34,22 @@
                 <p class="passcode-subtitle">Enter the 6-digit code to unlock this special gift</p>
                 
                 <div class="passcode-inputs">
-                    <input type="text" 
-                           class="passcode-digit" 
-                           id="digit-0" 
-                           maxlength="1" 
-                           oninput="handleDigitInput(0)"
-                           onkeydown="handleDigitKeydown(0, event)">
-                    <input type="text" 
-                           class="passcode-digit" 
-                           id="digit-1" 
-                           maxlength="1" 
-                           oninput="handleDigitInput(1)"
-                           onkeydown="handleDigitKeydown(1, event)">
-                    <input type="text" 
-                           class="passcode-digit" 
-                           id="digit-2" 
-                           maxlength="1" 
-                           oninput="handleDigitInput(2)"
-                           onkeydown="handleDigitKeydown(2, event)">
-                    <input type="text" 
-                           class="passcode-digit" 
-                           id="digit-3" 
-                           maxlength="1" 
-                           oninput="handleDigitInput(3)"
-                           onkeydown="handleDigitKeydown(3, event)">
-                    <input type="text" 
-                           class="passcode-digit" 
-                           id="digit-4" 
-                           maxlength="1" 
-                           oninput="handleDigitInput(4)"
-                           onkeydown="handleDigitKeydown(4, event)">
-                    <input type="text" 
-                           class="passcode-digit" 
-                           id="digit-5" 
-                           maxlength="1" 
-                           oninput="handleDigitInput(5)"
-                           onkeydown="handleDigitKeydown(5, event)">
+                    <input type="text" class="passcode-digit" id="digit-0" maxlength="1" oninput="handleDigitInput(0)" onkeydown="handleDigitKeydown(0, event)">
+                    <input type="text" class="passcode-digit" id="digit-1" maxlength="1" oninput="handleDigitInput(1)" onkeydown="handleDigitKeydown(1, event)">
+                    <input type="text" class="passcode-digit" id="digit-2" maxlength="1" oninput="handleDigitInput(2)" onkeydown="handleDigitKeydown(2, event)">
+                    <input type="text" class="passcode-digit" id="digit-3" maxlength="1" oninput="handleDigitInput(3)" onkeydown="handleDigitKeydown(3, event)">
+                    <input type="text" class="passcode-digit" id="digit-4" maxlength="1" oninput="handleDigitInput(4)" onkeydown="handleDigitKeydown(4, event)">
+                    <input type="text" class="passcode-digit" id="digit-5" maxlength="1" oninput="handleDigitInput(5)" onkeydown="handleDigitKeydown(5, event)">
                 </div>
                 
                 <div class="passcode-error" id="passcodeError"></div>
             </div>
         </div>
     </div>
-    
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
     <script src="script.js"></script>
 </body>
 </html>

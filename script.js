@@ -1,7 +1,19 @@
+const firebaseConfig = {
+    apiKey:            "AIzaSyALMN5lKjZXD8IXa7la_reuUO2LbuJ6l3o",
+    authDomain:        "faithfully-ac2cd.firebaseapp.com",
+    projectId:         "faithfully-ac2cd",
+    storageBucket:     "faithfully-ac2cd.firebasestorage.app",
+    messagingSenderId: "1036385139189",
+    appId:             "1:1036385139189:web:90ceabbcbe3c20b16e48bc"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 function createFloatingHearts() {
     const heartsContainer = document.getElementById('heartsBackground');
     const hearts = ['❤️', '💕', '💖', '💝', '💗', '💓'];
-    
+
     for (let i = 0; i < 15; i++) {
         const heart = document.createElement('div');
         heart.className = 'heart-float';
@@ -13,19 +25,34 @@ function createFloatingHearts() {
     }
 }
 
-async function loadCards() {
-    try {
-        const response = await fetch('cards.json');
-        const cards = await response.json();
-        renderCards(cards);
-    } catch (error) {
-        console.error('Error loading cards:', error);
-        document.getElementById('cardsGrid').innerHTML = `
-            <div class="empty-state">
-                Error loading cards. Please make sure cards.json is in the same directory.
-            </div>
-        `;
-    }
+function loadCardsData() {
+    const cardsGrid = document.getElementById('cardsGrid');
+
+    cardsGrid.innerHTML = `
+        <div class="empty-state" style="opacity:0.5;">
+            Loading...
+        </div>
+    `;
+
+    db.collection('cards')
+        .orderBy('order', 'asc')
+        .onSnapshot(
+            (snapshot) => {
+                const cards = [];
+                snapshot.forEach((doc) => {
+                    cards.push({ id: doc.id, ...doc.data() });
+                });
+                renderCards(cards);
+            },
+            (error) => {
+                console.error('Firestore error:', error);
+                cardsGrid.innerHTML = `
+                    <div class="empty-state">
+                        Could not load cards. Check your Firebase config and Firestore rules.
+                    </div>
+                `;
+            }
+        );
 }
 
 function escapeHtml(text) {
@@ -36,9 +63,9 @@ function escapeHtml(text) {
 
 function renderCards(cards) {
     const cardsGrid = document.getElementById('cardsGrid');
-    
+
     if (cards.length === 0) {
-        cardsGrid.innerHTML = '<div class="empty-state">No cards found in cards.json</div>';
+        cardsGrid.innerHTML = '<div class="empty-state">No cards found.</div>';
         return;
     }
 
@@ -67,7 +94,7 @@ function renderCards(cards) {
     `;
 
     cardsGrid.innerHTML = regularCards + lockedCard;
-    
+
     setTimeout(() => {
         const lockedCardElement = document.querySelector('.locked-card');
         if (lockedCardElement) {
@@ -76,27 +103,11 @@ function renderCards(cards) {
     }, 100);
 }
 
-let cardsData = [];
-async function loadCardsData() {
-    try {
-        const response = await fetch('cards.json');
-        cardsData = await response.json();
-        renderCards(cardsData);
-    } catch (error) {
-        console.error('Error loading cards:', error);
-        document.getElementById('cardsGrid').innerHTML = `
-            <div class="empty-state">
-                Error loading cards. Please make sure cards.json is in the same directory.
-            </div>
-        `;
-    }
-}
-
 function toggleCard(cardIndex) {
     const cardContent = document.getElementById(`card-content-${cardIndex}`);
     const card = cardContent.closest('.card');
     const icon = card.querySelector('.card-toggle-icon');
-    
+
     document.querySelectorAll('.card').forEach((otherCard, index) => {
         if (index !== cardIndex && otherCard.classList.contains('expanded')) {
             otherCard.classList.remove('expanded');
@@ -106,9 +117,9 @@ function toggleCard(cardIndex) {
             if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
         }
     });
-    
+
     const isExpanded = card.classList.contains('expanded');
-    
+
     if (isExpanded) {
         card.classList.remove('expanded');
         cardContent.style.maxHeight = '0';
@@ -120,14 +131,12 @@ function toggleCard(cardIndex) {
     }
 }
 
-const PASSCODE = '061604'; 
+const PASSCODE = '061604';
 let isLockedCardUnlocked = false;
 
 function openLockedCard(event) {
-    if (event) {
-        event.stopPropagation();
-    }
-    
+    if (event) event.stopPropagation();
+
     if (isLockedCardUnlocked) {
         toggleLockedCardContent();
         return;
@@ -136,7 +145,7 @@ function openLockedCard(event) {
     const passcodeModal = document.getElementById('passcodeModal');
     passcodeModal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    
+
     setTimeout(() => {
         document.getElementById('digit-0').focus();
     }, 100);
@@ -146,27 +155,27 @@ function closePasscodeModal() {
     const passcodeModal = document.getElementById('passcodeModal');
     passcodeModal.classList.remove('active');
     document.body.style.overflow = 'auto';
-    
+
     for (let i = 0; i < 6; i++) {
         document.getElementById(`digit-${i}`).value = '';
     }
-    
+
     document.getElementById('passcodeError').style.display = 'none';
 }
 
 function handleDigitInput(index) {
     const input = document.getElementById(`digit-${index}`);
     const value = input.value;
-    
+
     if (value && !/^\d$/.test(value)) {
         input.value = '';
         return;
     }
-    
+
     if (value && index < 5) {
         document.getElementById(`digit-${index + 1}`).focus();
     }
-    
+
     if (index === 5 && value) {
         checkPasscode();
     }
@@ -174,11 +183,11 @@ function handleDigitInput(index) {
 
 function handleDigitKeydown(index, event) {
     const input = document.getElementById(`digit-${index}`);
-    
+
     if (event.key === 'Backspace' && !input.value && index > 0) {
         document.getElementById(`digit-${index - 1}`).focus();
     }
-    
+
     if (event.key === 'v' && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
         navigator.clipboard.readText().then(text => {
@@ -186,9 +195,7 @@ function handleDigitKeydown(index, event) {
             for (let i = 0; i < digits.length && i < 6; i++) {
                 document.getElementById(`digit-${i}`).value = digits[i];
             }
-            if (digits.length === 6) {
-                checkPasscode();
-            }
+            if (digits.length === 6) checkPasscode();
         });
     }
 }
@@ -198,9 +205,9 @@ function checkPasscode() {
     for (let i = 0; i < 6; i++) {
         enteredCode += document.getElementById(`digit-${i}`).value;
     }
-    
+
     const errorElement = document.getElementById('passcodeError');
-    
+
     if (enteredCode === PASSCODE) {
         isLockedCardUnlocked = true;
         closePasscodeModal();
@@ -208,13 +215,11 @@ function checkPasscode() {
     } else {
         errorElement.textContent = 'Incorrect passcode. Try again!';
         errorElement.style.display = 'block';
-        
+
         const passcodeInputs = document.querySelector('.passcode-inputs');
         passcodeInputs.style.animation = 'shake 0.5s';
-        setTimeout(() => {
-            passcodeInputs.style.animation = '';
-        }, 500);
-        
+        setTimeout(() => { passcodeInputs.style.animation = ''; }, 500);
+
         for (let i = 0; i < 6; i++) {
             document.getElementById(`digit-${i}`).value = '';
         }
@@ -224,11 +229,9 @@ function checkPasscode() {
 
 function unlockCard() {
     const lockedCard = document.querySelector('.locked-card');
-    
     lockedCard.removeEventListener('click', openLockedCard);
-    
     lockedCard.classList.add('unlocked');
-    
+
     const lockedCardData = {
         title: "So Ali won't forget...",
         message: "️I know that you've been struggling with your short-term memory, Ali. So I made something for you, something that will help you quickly and easily write down your thoughts so you won't forget about them ever again. 🩵",
@@ -236,7 +239,7 @@ function unlockCard() {
         downloadLink: "./faithful.apk",
         downloadText: "Faithful"
     };
-    
+
     setTimeout(() => {
         lockedCard.innerHTML = `
             <div class="card-header">
@@ -255,16 +258,14 @@ function unlockCard() {
             </div>
             <div class="card-toggle-icon">▼</div>
         `;
-        
-        lockedCard.addEventListener('click', function(e) {
+
+        lockedCard.addEventListener('click', function (e) {
             if (!e.target.closest('.download-link')) {
                 toggleLockedCardContent();
             }
         });
-        
-        setTimeout(() => {
-            toggleLockedCardContent();
-        }, 300);
+
+        setTimeout(() => { toggleLockedCardContent(); }, 300);
     }, 600);
 }
 
@@ -272,9 +273,9 @@ function toggleLockedCardContent() {
     const lockedCard = document.querySelector('.locked-card');
     const cardContent = document.getElementById('card-content-locked');
     const icon = lockedCard.querySelector('.card-toggle-icon');
-    
+
     if (!cardContent || !icon) return;
-    
+
     document.querySelectorAll('.card:not(.locked-card)').forEach((otherCard) => {
         if (otherCard.classList.contains('expanded')) {
             otherCard.classList.remove('expanded');
@@ -284,9 +285,9 @@ function toggleLockedCardContent() {
             if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
         }
     });
-    
+
     const isExpanded = lockedCard.classList.contains('expanded');
-    
+
     if (isExpanded) {
         lockedCard.classList.remove('expanded');
         cardContent.style.maxHeight = '0';
@@ -301,22 +302,21 @@ function toggleLockedCardContent() {
 function initThemeToggle() {
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.querySelector('.theme-icon');
-    
+
     const currentTheme = localStorage.getItem('theme') || 'light';
     document.body.classList.toggle('dark-mode', currentTheme === 'dark');
     themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-    
-    themeToggle.addEventListener('click', function() {
+
+    themeToggle.addEventListener('click', function () {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
-        
+
         themeIcon.style.transform = 'rotate(360deg) scale(0)';
-        
         setTimeout(() => {
             themeIcon.textContent = isDark ? '☀️' : '🌙';
             themeIcon.style.transform = 'rotate(0deg) scale(1)';
         }, 200);
-        
+
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 }
@@ -330,7 +330,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     createFloatingHearts();
     loadCardsData();
     initThemeToggle();
