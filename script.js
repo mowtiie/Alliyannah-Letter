@@ -73,7 +73,7 @@ function renderCards(cards) {
         <div class="card" onclick="toggleCard(${index})" style="animation-delay: ${index * 0.1}s">
             <div class="card-header">
                 <div class="card-title">${escapeHtml(card.title)}</div>
-                <div class="card-date">${escapeHtml(card.date)}</div>
+                <div class="card-date">${escapeHtml(card.dateLabel)}</div>
             </div>
             <div class="card-content" id="card-content-${index}">
                 <div class="card-message">${escapeHtml(card.message)}</div>
