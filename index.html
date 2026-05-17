@@ -3,53 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>️Hilow po, Ali!</title>
+    <title>Hilow po, Ali!</title>
     <link rel="icon" type="image/png" href="icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Mrs+Saint+Delafield&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
     <div class="hearts-bg" id="heartsBackground"></div>
+
     <nav class="sticky-header" id="stickyHeader">
         <span class="sticky-title">Read well po...</span>
     </nav>
+
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <span class="theme-icon">🌙</span>
     </button>
-    <header>
-        <h1>To Alliyannah Faith.</h1>
-        <p class="subtitle">To show my appreciation and care for you, <br>here is how I will respond for what you have been doing for me. <br> In this way, I hope that I will get to know you more in the future.</p>
-    </header>
-    <div class="container">
-        <div class="cards-grid" id="cardsGrid">
-        </div>
-    </div>
-    <div class="passcode-modal" id="passcodeModal">
-        <div class="passcode-overlay" onclick="closePasscodeModal()"></div>
-        <div class="passcode-content">
-            <button class="passcode-close" onclick="closePasscodeModal()">&times;</button>
-            <div class="passcode-card">
-                <div class="passcode-icon">🎁</div>
-                <h2 class="passcode-title">Enter Passcode</h2>
-                <p class="passcode-subtitle">Enter the 6-digit code to unlock this special gift</p>
-                
-                <div class="passcode-inputs">
-                    <input type="text" class="passcode-digit" id="digit-0" maxlength="1" oninput="handleDigitInput(0)" onkeydown="handleDigitKeydown(0, event)">
-                    <input type="text" class="passcode-digit" id="digit-1" maxlength="1" oninput="handleDigitInput(1)" onkeydown="handleDigitKeydown(1, event)">
-                    <input type="text" class="passcode-digit" id="digit-2" maxlength="1" oninput="handleDigitInput(2)" onkeydown="handleDigitKeydown(2, event)">
-                    <input type="text" class="passcode-digit" id="digit-3" maxlength="1" oninput="handleDigitInput(3)" onkeydown="handleDigitKeydown(3, event)">
-                    <input type="text" class="passcode-digit" id="digit-4" maxlength="1" oninput="handleDigitInput(4)" onkeydown="handleDigitKeydown(4, event)">
-                    <input type="text" class="passcode-digit" id="digit-5" maxlength="1" oninput="handleDigitInput(5)" onkeydown="handleDigitKeydown(5, event)">
-                </div>
-                
-                <div class="passcode-error" id="passcodeError"></div>
+
+    <div class="app-shell">
+        <aside class="side-drawer">
+            <div class="drawer-brand">
+                <span class="drawer-heart">💝</span>
+                <span class="drawer-name">For Ali</span>
             </div>
-        </div>
+            <nav class="drawer-nav">
+                <button class="nav-btn active" data-section="home" onclick="switchSection('home', this)">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                </button>
+                <button class="nav-btn" data-section="letters" onclick="switchSection('letters', this)">
+                    <span class="nav-icon">💌</span>
+                    <span class="nav-label">Letters</span>
+                </button>
+            </nav>
+            <div class="drawer-footer">made with 🩵</div>
+        </aside>
+
+        <main class="main-content">
+
+            <section class="page-section active" id="section-home">
+                <header>
+                    <h1>To Alliyannah Faith.</h1>
+                    <p class="subtitle">To show my appreciation and care for you, <br>here is how I will respond for what you have been doing for me. <br>In this way, I hope that I will get to know you more in the future.</p>
+                </header>
+                <div class="container">
+                    <div class="countdown-wrapper">
+                        <div class="countdown-label">Days until Ali's Birthday 🎂</div>
+                        <div class="countdown-blocks" id="countdownBlocks">
+                            <div class="countdown-block">
+                                <span class="countdown-num" id="cd-days">--</span>
+                                <span class="countdown-unit">days</span>
+                            </div>
+                            <div class="countdown-sep">:</div>
+                            <div class="countdown-block">
+                                <span class="countdown-num" id="cd-hours">--</span>
+                                <span class="countdown-unit">hours</span>
+                            </div>
+                            <div class="countdown-sep">:</div>
+                            <div class="countdown-block">
+                                <span class="countdown-num" id="cd-minutes">--</span>
+                                <span class="countdown-unit">mins</span>
+                            </div>
+                            <div class="countdown-sep">:</div>
+                            <div class="countdown-block">
+                                <span class="countdown-num" id="cd-seconds">--</span>
+                                <span class="countdown-unit">secs</span>
+                            </div>
+                        </div>
+                        <div class="countdown-birthday" id="countdownBirthday" style="display:none;">
+                            Happy Birthday, Ali! 🎉🎂
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="page-section" id="section-letters">
+                <header class="section-header">
+                    <h2 class="section-title">💌 Letters</h2>
+                    <p class="section-subtitle">Words written from the heart, chapter by chapter.</p>
+                </header>
+                <div class="container">
+                    <div class="pinned-card" id="pinnedCard">
+                        <div class="pinned-badge">📌 Pinned</div>
+                        <div class="card" onclick="toggleCard('pinned')">
+                            <div class="card-header">
+                                <div class="card-title">So Ali won't forget...</div>
+                                <div class="card-date">Vrixzandro</div>
+                            </div>
+                            <div class="card-content" id="card-content-pinned">
+                                <div class="card-message">I know that you've been struggling with your short-term memory, Ali. So I made something for you, something that will help you quickly and easily write down your thoughts so you won't forget about them ever again. 🩵</div>
+                                <div class="card-download">
+                                    <a href="./faithful.apk" class="download-link" download onclick="event.stopPropagation()">
+                                        <span class="download-icon">🩷</span>
+                                        <span class="download-text">Faithful</span>
+                                        <span class="download-arrow">→</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-toggle-icon">▼</div>
+                        </div>
+                    </div>
+
+                    <div id="chaptersContainer">
+                        <div class="empty-state">Loading...</div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn active" data-section="home" onclick="switchSection('home', this)">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-btn" data-section="letters" onclick="switchSection('letters', this)">
+            <span class="nav-icon">💌</span>
+            <span class="nav-label">Letters</span>
+        </button>
+    </nav>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
     <script src="script.js"></script>
 </body>
 </html>

@@ -10,10 +10,28 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+const sectionLoaded = { home: true, letters: false };
+
+function switchSection(name, btn) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.section === name);
+    });
+
+    document.getElementById('section-' + name).classList.add('active');
+    document.getElementById('heartsBackground').style.opacity = name === 'home' ? '1' : '0';
+
+    if (!sectionLoaded[name]) {
+        sectionLoaded[name] = true;
+        if (name === 'letters') loadLetters();
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function createFloatingHearts() {
     const heartsContainer = document.getElementById('heartsBackground');
     const hearts = ['❤️', '💕', '💖', '💝', '💗', '💓'];
-
     for (let i = 0; i < 15; i++) {
         const heart = document.createElement('div');
         heart.className = 'heart-float';
@@ -25,101 +43,125 @@ function createFloatingHearts() {
     }
 }
 
-function loadCardsData() {
-    const cardsGrid = document.getElementById('cardsGrid');
+function initCountdown() {
+    const birthday = new Date('2026-06-16T00:00:00');
 
-    cardsGrid.innerHTML = `
-        <div class="empty-state" style="opacity:0.5;">
-            Loading...
-        </div>
-    `;
+    function tick() {
+        const now  = new Date();
+        const diff = birthday - now;
 
-    db.collection('cards')
+        if (diff <= 0) {
+            document.getElementById('countdownBlocks').style.display   = 'none';
+            document.getElementById('countdownBirthday').style.display = 'block';
+            return;
+        }
+
+        const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('cd-days').textContent    = String(days).padStart(2, '0');
+        document.getElementById('cd-hours').textContent   = String(hours).padStart(2, '0');
+        document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
+    }
+
+    tick();
+    setInterval(tick, 1000);
+}
+
+function loadLetters() {
+    const container = document.getElementById('chaptersContainer');
+    container.innerHTML = '<div class="empty-state" style="opacity:.5">Loading...</div>';
+
+    db.collection('chapters')
         .orderBy('order', 'asc')
-        .onSnapshot(
-            (snapshot) => {
-                const cards = [];
-                snapshot.forEach((doc) => {
-                    cards.push({ id: doc.id, ...doc.data() });
-                });
-                renderCards(cards);
-            },
-            (error) => {
-                console.error('Firestore error:', error);
-                cardsGrid.innerHTML = `
-                    <div class="empty-state">
-                        Could not load cards. Check your Firebase config and Firestore rules.
+        .onSnapshot(chaptersSnap => {
+            if (chaptersSnap.empty) {
+                container.innerHTML = '<div class="empty-state">No chapters yet.</div>';
+                return;
+            }
+
+            const chapters = [];
+            chaptersSnap.forEach(doc => chapters.push({ id: doc.id, ...doc.data() }));
+
+            container.innerHTML = '';
+
+            chapters.forEach(chapter => {
+                const chapterEl = document.createElement('div');
+                chapterEl.className = 'chapter-block';
+                chapterEl.id = 'chapter-' + chapter.id;
+                chapterEl.innerHTML = `
+                    <div class="chapter-header">
+                        <div class="chapter-title-row">
+                            <span class="chapter-icon">📖</span>
+                            <h3 class="chapter-title">${escapeHtml(chapter.title)}</h3>
+                        </div>
+                        ${chapter.description
+                            ? `<p class="chapter-description">${escapeHtml(chapter.description)}</p>`
+                            : ''}
+                    </div>
+                    <div class="cards-grid chapter-cards" id="cards-${chapter.id}">
+                        <div class="empty-state small">Loading...</div>
                     </div>
                 `;
-            }
-        );
+                container.appendChild(chapterEl);
+
+                db.collection('cards')
+                    .where('chapterId', '==', chapter.id)
+                    .orderBy('order', 'asc')
+                    .onSnapshot(cardsSnap => {
+                        const cardsGrid = document.getElementById('cards-' + chapter.id);
+                        if (!cardsGrid) return;
+                        const cards = [];
+                        cardsSnap.forEach(doc => cards.push({ id: doc.id, ...doc.data() }));
+                        renderChapterCards(cardsGrid, cards, chapter.id);
+                    });
+            });
+        }, err => {
+            container.innerHTML = '<div class="empty-state">Could not load letters. Check Firestore rules.</div>';
+            console.error(err);
+        });
 }
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function renderCards(cards) {
-    const cardsGrid = document.getElementById('cardsGrid');
-
+function renderChapterCards(grid, cards, chapterId) {
     if (cards.length === 0) {
-        cardsGrid.innerHTML = '<div class="empty-state">No cards found.</div>';
+        grid.innerHTML = '<div class="empty-state small">No letters in this chapter yet.</div>';
         return;
     }
 
-    const regularCards = cards.map((card, index) => `
-        <div class="card" onclick="toggleCard(${index})" style="animation-delay: ${index * 0.1}s">
+    grid.innerHTML = cards.map((card, index) => `
+        <div class="card" onclick="toggleCard('${chapterId}-${index}')" style="animation-delay:${index * 0.1}s">
             <div class="card-header">
                 <div class="card-title">${escapeHtml(card.title)}</div>
-                <div class="card-date">${escapeHtml(card.dateLabel)}</div>
+                <div class="card-date">${escapeHtml(card.dateLabel || '')}</div>
             </div>
-            <div class="card-content" id="card-content-${index}">
+            <div class="card-content" id="card-content-${chapterId}-${index}">
                 <div class="card-message">${escapeHtml(card.message)}</div>
             </div>
             <div class="card-toggle-icon">▼</div>
         </div>
     `).join('');
-
-    const lockedCard = `
-        <div class="card locked-card" style="animation-delay: ${cards.length * 0.1}s">
-            <div class="locked-card-content">
-                <div class="locked-icon">🎁</div>
-                <div class="locked-title">Special Gift</div>
-                <div class="locked-subtitle">Enter passcode to unlock</div>
-                <div class="locked-lock">🔒</div>
-            </div>
-        </div>
-    `;
-
-    cardsGrid.innerHTML = regularCards + lockedCard;
-
-    setTimeout(() => {
-        const lockedCardElement = document.querySelector('.locked-card');
-        if (lockedCardElement) {
-            lockedCardElement.addEventListener('click', openLockedCard);
-        }
-    }, 100);
 }
 
-function toggleCard(cardIndex) {
-    const cardContent = document.getElementById(`card-content-${cardIndex}`);
+function toggleCard(cardId) {
+    const cardContent = document.getElementById('card-content-' + cardId);
+    if (!cardContent) return;
     const card = cardContent.closest('.card');
     const icon = card.querySelector('.card-toggle-icon');
 
-    document.querySelectorAll('.card').forEach((otherCard, index) => {
-        if (index !== cardIndex && otherCard.classList.contains('expanded')) {
-            otherCard.classList.remove('expanded');
-            const otherContent = document.getElementById(`card-content-${index}`);
-            const otherIcon = otherCard.querySelector('.card-toggle-icon');
+    document.querySelectorAll('.card.expanded').forEach(other => {
+        if (other !== card) {
+            other.classList.remove('expanded');
+            const otherContent = other.querySelector('.card-content');
+            const otherIcon    = other.querySelector('.card-toggle-icon');
             if (otherContent) otherContent.style.maxHeight = '0';
-            if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+            if (otherIcon)    otherIcon.style.transform    = 'rotate(0deg)';
         }
     });
 
     const isExpanded = card.classList.contains('expanded');
-
     if (isExpanded) {
         card.classList.remove('expanded');
         cardContent.style.maxHeight = '0';
@@ -131,177 +173,9 @@ function toggleCard(cardIndex) {
     }
 }
 
-const PASSCODE = '061604';
-let isLockedCardUnlocked = false;
-
-function openLockedCard(event) {
-    if (event) event.stopPropagation();
-
-    if (isLockedCardUnlocked) {
-        toggleLockedCardContent();
-        return;
-    }
-
-    const passcodeModal = document.getElementById('passcodeModal');
-    passcodeModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    setTimeout(() => {
-        document.getElementById('digit-0').focus();
-    }, 100);
-}
-
-function closePasscodeModal() {
-    const passcodeModal = document.getElementById('passcodeModal');
-    passcodeModal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-
-    for (let i = 0; i < 6; i++) {
-        document.getElementById(`digit-${i}`).value = '';
-    }
-
-    document.getElementById('passcodeError').style.display = 'none';
-}
-
-function handleDigitInput(index) {
-    const input = document.getElementById(`digit-${index}`);
-    const value = input.value;
-
-    if (value && !/^\d$/.test(value)) {
-        input.value = '';
-        return;
-    }
-
-    if (value && index < 5) {
-        document.getElementById(`digit-${index + 1}`).focus();
-    }
-
-    if (index === 5 && value) {
-        checkPasscode();
-    }
-}
-
-function handleDigitKeydown(index, event) {
-    const input = document.getElementById(`digit-${index}`);
-
-    if (event.key === 'Backspace' && !input.value && index > 0) {
-        document.getElementById(`digit-${index - 1}`).focus();
-    }
-
-    if (event.key === 'v' && (event.ctrlKey || event.metaKey)) {
-        event.preventDefault();
-        navigator.clipboard.readText().then(text => {
-            const digits = text.replace(/\D/g, '').slice(0, 6);
-            for (let i = 0; i < digits.length && i < 6; i++) {
-                document.getElementById(`digit-${i}`).value = digits[i];
-            }
-            if (digits.length === 6) checkPasscode();
-        });
-    }
-}
-
-function checkPasscode() {
-    let enteredCode = '';
-    for (let i = 0; i < 6; i++) {
-        enteredCode += document.getElementById(`digit-${i}`).value;
-    }
-
-    const errorElement = document.getElementById('passcodeError');
-
-    if (enteredCode === PASSCODE) {
-        isLockedCardUnlocked = true;
-        closePasscodeModal();
-        unlockCard();
-    } else {
-        errorElement.textContent = 'Incorrect passcode. Try again!';
-        errorElement.style.display = 'block';
-
-        const passcodeInputs = document.querySelector('.passcode-inputs');
-        passcodeInputs.style.animation = 'shake 0.5s';
-        setTimeout(() => { passcodeInputs.style.animation = ''; }, 500);
-
-        for (let i = 0; i < 6; i++) {
-            document.getElementById(`digit-${i}`).value = '';
-        }
-        document.getElementById('digit-0').focus();
-    }
-}
-
-function unlockCard() {
-    const lockedCard = document.querySelector('.locked-card');
-    lockedCard.removeEventListener('click', openLockedCard);
-    lockedCard.classList.add('unlocked');
-
-    const lockedCardData = {
-        title: "So Ali won't forget...",
-        message: "️I know that you've been struggling with your short-term memory, Ali. So I made something for you, something that will help you quickly and easily write down your thoughts so you won't forget about them ever again. 🩵",
-        date: "Vrixzandro",
-        downloadLink: "./faithful.apk",
-        downloadText: "Faithful"
-    };
-
-    setTimeout(() => {
-        lockedCard.innerHTML = `
-            <div class="card-header">
-                <div class="card-title">${escapeHtml(lockedCardData.title)}</div>
-                <div class="card-date">${escapeHtml(lockedCardData.date)}</div>
-            </div>
-            <div class="card-content" id="card-content-locked" style="max-height: 0;">
-                <div class="card-message">${escapeHtml(lockedCardData.message)}</div>
-                <div class="card-download">
-                    <a href="${lockedCardData.downloadLink}" class="download-link" download>
-                        <span class="download-icon">🩷</span>
-                        <span class="download-text">${escapeHtml(lockedCardData.downloadText)}</span>
-                        <span class="download-arrow">→</span>
-                    </a>
-                </div>
-            </div>
-            <div class="card-toggle-icon">▼</div>
-        `;
-
-        lockedCard.addEventListener('click', function (e) {
-            if (!e.target.closest('.download-link')) {
-                toggleLockedCardContent();
-            }
-        });
-
-        setTimeout(() => { toggleLockedCardContent(); }, 300);
-    }, 600);
-}
-
-function toggleLockedCardContent() {
-    const lockedCard = document.querySelector('.locked-card');
-    const cardContent = document.getElementById('card-content-locked');
-    const icon = lockedCard.querySelector('.card-toggle-icon');
-
-    if (!cardContent || !icon) return;
-
-    document.querySelectorAll('.card:not(.locked-card)').forEach((otherCard) => {
-        if (otherCard.classList.contains('expanded')) {
-            otherCard.classList.remove('expanded');
-            const otherContent = otherCard.querySelector('.card-content');
-            const otherIcon = otherCard.querySelector('.card-toggle-icon');
-            if (otherContent) otherContent.style.maxHeight = '0';
-            if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
-        }
-    });
-
-    const isExpanded = lockedCard.classList.contains('expanded');
-
-    if (isExpanded) {
-        lockedCard.classList.remove('expanded');
-        cardContent.style.maxHeight = '0';
-        icon.style.transform = 'rotate(0deg)';
-    } else {
-        lockedCard.classList.add('expanded');
-        cardContent.style.maxHeight = cardContent.scrollHeight + 'px';
-        icon.style.transform = 'rotate(180deg)';
-    }
-}
-
 function initThemeToggle() {
     const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.querySelector('.theme-icon');
+    const themeIcon   = document.querySelector('.theme-icon');
 
     const currentTheme = localStorage.getItem('theme') || 'light';
     document.body.classList.toggle('dark-mode', currentTheme === 'dark');
@@ -310,28 +184,29 @@ function initThemeToggle() {
     themeToggle.addEventListener('click', function () {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
-
         themeIcon.style.transform = 'rotate(360deg) scale(0)';
         setTimeout(() => {
-            themeIcon.textContent = isDark ? '☀️' : '🌙';
+            themeIcon.textContent     = isDark ? '☀️' : '🌙';
             themeIcon.style.transform = 'rotate(0deg) scale(1)';
         }, 200);
-
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 }
 
 const stickyHeader = document.getElementById('stickyHeader');
 window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-        stickyHeader.classList.add('visible');
-    } else {
-        stickyHeader.classList.remove('visible');
-    }
+    stickyHeader.classList.toggle('visible', window.scrollY > 100);
 });
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     createFloatingHearts();
-    loadCardsData();
+    initCountdown();
     initThemeToggle();
 });
